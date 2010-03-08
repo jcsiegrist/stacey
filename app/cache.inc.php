@@ -5,7 +5,7 @@ Class Cache {
 	var $page;
 	var $cachefile;
 	var $hash;
-	
+
 	function __construct($page) {
 		# store reference to current page
 		$this->page = $page;
@@ -14,23 +14,23 @@ Class Cache {
 		//collect an md5 of all files
 		$this->hash = $this->create_hash();
 	}
-	
+
 	function render() {
 		return file_get_contents($this->cachefile)."\n".'<!-- Cached. -->';
 	}
-	
+
 	function create($page) {
 		# start output buffer
 		ob_start();
-			echo $page->parse_template();
-			# if cache folder is writable, write to it
-			if(is_writable('./app/_cache')) $this->write_cache();
-			else echo "\n".'<!-- Stacey('.Stacey::$version.'). -->';
+		echo $page->parse_template();
+		# if cache folder is writable, write to it
+		if(is_writable('./app/_cache')) $this->write_cache();
+		else echo "\n".'<!-- Stacey('.Stacey::$version.'). -->';
 		# end buffer
 		ob_end_flush();
 		return '';
 	}
-	
+
 	function expired() {
 		# if cachefile doesn't exist, we need to create one
 		if(!file_exists($this->cachefile)) return true;
@@ -38,12 +38,12 @@ Class Cache {
 		elseif($this->hash !== $this->get_current_hash()) return true;
 		else return false;
 	}
-	
+
 	function get_current_hash() {
 		preg_match('/Stacey.*: (.+?)\s/', file_get_contents($this->cachefile), $matches);
 		return $matches[1];
 	}
-	
+
 	function write_cache() {
 		echo "\n".'<!-- Stacey('.Stacey::$version.'): '.$this->hash.' -->';
 		$fp = fopen($this->cachefile, 'w');
@@ -61,7 +61,7 @@ Class Cache {
 		# create an md5 of the two collections
 		return $this->hash = md5($content.$templates.$public);
 	}
-	
+
 	function collate_files($dir) {
 		$files_modified = '';
 		foreach(Helpers::list_files($dir, '/.*/', false) as $file) {
@@ -70,7 +70,7 @@ Class Cache {
 		}
 		return $files_modified;
 	}
-	
+
 }
 
 ?>
