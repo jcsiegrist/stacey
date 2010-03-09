@@ -7,6 +7,10 @@ if(phpversion() < 5) {
 
 } else {
 
+	if (!is_writable('./app/_cache')) {
+		require_once './vendors/FirePHPCore/fb.php';
+	}
+
   # require helpers class so we can use rglob
   require_once './app/helpers.inc.php';
   # include any php files which sit in the app folder
